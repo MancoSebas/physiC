@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <math.h>
 
 // Create the FlatVector class
 class FlatVector {
@@ -25,6 +26,19 @@ class FlatVector {
   inline FlatVector operator+(const FlatVector& a) {
     return FlatVector(this->X + a.X, this->Y + a.Y);
   }
+
+  inline FlatVector operator-(const FlatVector& a){
+    return FlatVector(this->X - a.X, this->Y - a.Y);
+  }
+
+  float Length(){
+    float dx = this->X - 0.0f;
+    float dy = this->Y - 0.0f;
+
+    float length = sqrt(pow(dx,2) + pow(dy,2));
+    return length;
+  }  
+
 };
 
 #endif // !FLAT_VEC_H

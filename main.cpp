@@ -9,6 +9,8 @@ int main(){
   FlatVector sumVector = FlatVector1 + FlatVector2;
   
   std::cout << sumVector << std::endl;
+  std::cout << sumVector.Length() << std::endl; 
+
 
   return 0;
 }
