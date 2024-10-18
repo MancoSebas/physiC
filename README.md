@@ -1,3 +1,3 @@
 # physiC
 
-A physics engine created entirely on C++, only with educational purposes
+A physics engine created entirely on C++, only with educational purposes (for now)
