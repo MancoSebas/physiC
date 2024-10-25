@@ -10,7 +10,7 @@ int main(){
   FlatVector sumVector = FlatVector1 + FlatVector2;
   
   std::cout << sumVector << std::endl;
-  std::cout << sumVector.Length() << std::endl; 
+  std::cout << FlatMath().Length(sumVector) << std::endl; 
   std::cout << FlatMath().Normalize(sumVector) << std::endl; 
   std::cout << FlatMath().Dot(FlatVector1,FlatVector2) << std::endl;
 
