@@ -1,5 +1,5 @@
 #include <iostream>
-#include "FlatMath.h" 
+#include "../headers/FlatMath.h"
 //#include "FlatVector.h"
 
 int main(){
