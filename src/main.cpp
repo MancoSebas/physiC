@@ -7,7 +7,7 @@
 #include <iostream>
 #include "../headers/FlatMath.h"
 #include <SDL2/SDL.h>
-//#include "../headers/FlatVector.h"
+#include <SDL2/SDL2_gfxPrimitives.h> 
 
 const int SCREEN_WIDTH = 600;
 const int SCREEN_HEIGHT = 600;
@@ -16,21 +16,22 @@ bool init();
 bool loadMedia();
 void close();
 
+FlatVector changeCoordinate(FlatVector vector);
+
+void RenderVector(SDL_Renderer* renderer, int r, int g, int b, FlatVector vector);
+
 SDL_Window* gWindow = nullptr;
 
 SDL_Renderer* gRenderer = nullptr;
 
-FlatVector changeCoordinate(FlatVector vector){
-    return FlatVector(vector.X+ (float)SCREEN_WIDTH/2, -vector.Y + (float)SCREEN_HEIGHT/2);
-}
-
-
 int main(int argc, char* argv[]){
 
-    FlatVector Vector(100,-100); 
-    FlatVector newVec = changeCoordinate(Vector);
+    FlatVector Vector1(100,-120); 
+    FlatVector Vector2(75, 35); 
+    
+    FlatVector Vector3 = Vector1 + Vector2;
 
-    std::cout << newVec.X  << " " << newVec.Y << "\n";
+    std::cout << Vector1 << " + " << Vector2 << " = " << Vector3 << "\n";
 
     //FlatVector sumVector = FlatVector1 + FlatVector2;
 
@@ -60,9 +61,10 @@ int main(int argc, char* argv[]){
 
                 SDL_RenderClear(gRenderer);
 
-                SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-                SDL_RenderDrawLine(gRenderer, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, newVec.X, newVec.Y);
-                
+                RenderVector(gRenderer, 0, 0, 0, Vector1);
+                RenderVector(gRenderer, 0, 128, 0, Vector2);
+                RenderVector(gRenderer, 128, 0, 128, Vector3);
+
                 SDL_RenderPresent(gRenderer);
             }
         } 
@@ -109,4 +111,12 @@ void close(){
     gRenderer = NULL;
 
     SDL_Quit();
+}
+
+FlatVector changeCoordinate(FlatVector vector){
+    return FlatVector(vector.X+ (float)SCREEN_WIDTH/2, -vector.Y + (float)SCREEN_HEIGHT/2);
+}
+
+void RenderVector(SDL_Renderer* renderer, int r, int g, int b, FlatVector vector){
+    thickLineRGBA(renderer, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, changeCoordinate(vector).X, changeCoordinate(vector).Y, 3, r, g, b, SDL_ALPHA_OPAQUE);
 }
