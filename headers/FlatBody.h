@@ -1,8 +1,10 @@
 #include "FlatWorld.h"
+#include <stdexcept>
 #ifndef FLAT_BODY
 
 #include <cmath>
-#include "FlatVector.h"
+#include "FlatMath.h"
+////#include "FlatVector.h"
 #include <math.h>
 
 enum ShapeType {
@@ -31,6 +33,8 @@ public:
 
     ShapeType shapeType;
 
+    FlatBody(){};
+
     FlatBody(
         FlatVector position, 
         float density, 
@@ -57,28 +61,60 @@ public:
     }
 
 
-    bool createCircleBody(float radius, FlatVector position, float density, bool isStatic, float restitution){
+    FlatBody createCircleBody(float radius, FlatVector position, float density, bool isStatic, float restitution){
        
         float area = radius * radius * M_PI;
 
         if (area < FlatWorld().minBodySize) {
-            return false;
+            std::invalid_argument("body size must be greater than the minimum");
         }
 
         if (area > FlatWorld().maxBodySize) {
-            return false;
+            std::invalid_argument("body size must be smaller than the maximum");
         }
 
         if (density < FlatWorld().minDensity) {
-            return false; 
+            std::invalid_argument("body density must be greater than the minimum density");
         }
 
         if (density > FlatWorld().maxDensity) {
-            return false;  
+            std::invalid_argument("body density must be smaller than the maximum density");
         } 
 
-        FlatBody body = FlatBody(position,density,mass, restitution, area, isStatic, radius, width, height, shapeType);
-        return true; 
+        restitution = FlatMath().clamp(restitution, 0.0f, 1.0f);
+        
+        float mass = area * density;
+
+
+        std::cout << "creating circle body" << std::endl;
+        
+        return FlatBody(position,density,mass, restitution, area, isStatic, radius, 0.0f, 0.0f, ShapeType::circle);
+    }
+
+    FlatBody createBox(float width, float height, FlatVector position, float density, bool isStatic, float restitution){
+
+        float area = width * height;
+
+        if (area < FlatWorld().minBodySize) {
+            std::invalid_argument("body size must be greater than the minimum");
+        }
+
+        if (area > FlatWorld().maxBodySize) {
+            std::invalid_argument("body size must be smaller than the maximum");
+        }
+
+        if (density < FlatWorld().minDensity) {
+            std::invalid_argument("body density must be greater than the minimum density");
+        }
+
+        if (density > FlatWorld().maxDensity) {
+            std::invalid_argument("body density must be smaller than the maximum density");
+        } 
+
+        restitution = FlatMath().clamp(restitution, 0.0f, 1.0f);
+        float mass = area * density; 
+        
+        return FlatBody(position, density, mass, restitution, area, isStatic, 0.0f, width, height, ShapeType::box);
     }
 
 };

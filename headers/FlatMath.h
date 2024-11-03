@@ -1,3 +1,4 @@
+#include <iostream>
 #ifndef FLAT_MATH_H
 
 #include <cmath>
@@ -14,22 +15,43 @@ public:
     return length;
   }  
 
-  float Distance(FlatVector a, FlatVector b){
-    float dx = a.X - b.X;
-    float dy = a.Y - b.Y;
+    float clamp(float value, float min, float max){
+        if (min == max) {
+            return min; 
+        }
 
-    return sqrt(dx*dx + dy*dy);
-  }
+        if (min > max) {
+            return min; 
+            std::cerr << "max should be greater than min" << std::endl;
+        }
 
-  FlatVector Normalize(FlatVector v){
-    float len = FlatMath().Length(v);
+        if (value < min) {
+            return min; 
+        }
 
-    return FlatVector(v.X / len, v.Y / len); 
-  }
+        if (value > max) {
+            return max;  
+        }
 
-  float Dot(FlatVector a, FlatVector b){
-    return ((a.X * b.X) + (a.Y * b.Y));
-  }
+        return value;
+    }
+
+    float Distance(FlatVector a, FlatVector b){
+        float dx = a.X - b.X;
+        float dy = a.Y - b.Y;
+
+        return sqrt(dx*dx + dy*dy);
+    }
+
+    FlatVector Normalize(FlatVector v){
+        float len = FlatMath().Length(v);
+
+        return FlatVector(v.X / len, v.Y / len); 
+    }
+
+    float Dot(FlatVector a, FlatVector b){
+        return ((a.X * b.X) + (a.Y * b.Y));
+    }
 };
 
 #endif // !FLAT_MATH_H
