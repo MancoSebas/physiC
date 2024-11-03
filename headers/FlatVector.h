@@ -18,7 +18,7 @@ class FlatVector {
 
   // overload the << operator for printing FlatVector objects
   friend std::ostream& operator<<(std::ostream& out, const FlatVector& v) {
-    out << "(" << v.X << "," << v.Y << ")";
+    out << "[" << v.X << "," << v.Y << "]";
     return out;
   }
 
