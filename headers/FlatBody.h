@@ -1,33 +1,32 @@
-#include "FlatWorld.h"
-#include <stdexcept>
-#ifndef FLAT_BODY
+#ifndef BODY_H
+#define BODY_H
 
-#include <cmath>
-#include "FlatMath.h"
-////#include "FlatVector.h"
-#include <math.h>
+#include "vec2.h"
+#include <array>
 
-enum ShapeType {
-    circle = 0,
+enum ShapeType{
+    circle = 0, 
     box = 1,
 };
 
 class FlatBody{
 public: 
-    FlatVector position = FlatVector(0.0f,0.0f);
-    FlatVector linearVelocity = FlatVector(0.0f,0.0f);
+    Vec2 position {};
+    Vec2 linearVelocity {};
+    std::array<Vec2, 4> vertices {};
+    std::array<Vec2, 4> transformedVertices {}; 
 
-    float rotation;
-    float rotationalVelocity;
-    
-    float density; 
-    float mass;
-    float restitution; 
-    float area;
+    float rotation; 
+    float rotationVelocity;
+
+    float density;
+    float mass; 
+    float restitution;
+    float area; 
 
     bool isStatic;
-    
-    float radius;
+
+    float radius; 
     float width; 
     float height;
 
@@ -36,89 +35,23 @@ public:
     FlatBody(){};
 
     FlatBody(
-        FlatVector position, 
-        float density, 
-        float mass, 
-        float restitution, 
-        float area, 
+        Vec2 position,
+        float density,
+        float mass,
+        float restitution,
+        float area,
         bool isStatic,
         float radius,
         float width,
         float height,
         ShapeType shapeType
-    ){
-        this->position = position;  
-        this->linearVelocity = FlatVector(0.0f,0.0f); 
-        this->density = density; 
-        this->mass = mass; 
-        this->restitution = restitution; 
-        this->area = area; 
-        this->isStatic = isStatic;
-        this->radius = radius; 
-        this->width = width; 
-        this->height = height; 
-        this->shapeType = shapeType; 
-    }
+    );
 
+    std::array<Vec2,4> createBoxVertices(float width, float height); 
+    
+    void move(Vec2 dv);
+    
+    FlatBody createCircleBody(float raidus, Vec2 position, float density, bool isStatic, float restitution);
+}; 
 
-    FlatBody createCircleBody(float radius, FlatVector position, float density, bool isStatic, float restitution){
-       
-        float area = radius * radius * M_PI;
-
-        if (area < FlatWorld().minBodySize) {
-            std::invalid_argument("body size must be greater than the minimum");
-        }
-
-        if (area > FlatWorld().maxBodySize) {
-            std::invalid_argument("body size must be smaller than the maximum");
-        }
-
-        if (density < FlatWorld().minDensity) {
-            std::invalid_argument("body density must be greater than the minimum density");
-        }
-
-        if (density > FlatWorld().maxDensity) {
-            std::invalid_argument("body density must be smaller than the maximum density");
-        } 
-
-        restitution = FlatMath().clamp(restitution, 0.0f, 1.0f);
-        
-        float mass = area * density;
-
-
-        std::cout << "creating circle body" << std::endl;
-        
-        return FlatBody(position,density,mass, restitution, area, isStatic, radius, 0.0f, 0.0f, ShapeType::circle);
-    }
-
-    FlatBody createBox(float width, float height, FlatVector position, float density, bool isStatic, float restitution){
-
-        float area = width * height;
-
-        if (area < FlatWorld().minBodySize) {
-            std::invalid_argument("body size must be greater than the minimum");
-        }
-
-        if (area > FlatWorld().maxBodySize) {
-            std::invalid_argument("body size must be smaller than the maximum");
-        }
-
-        if (density < FlatWorld().minDensity) {
-            std::invalid_argument("body density must be greater than the minimum density");
-        }
-
-        if (density > FlatWorld().maxDensity) {
-            std::invalid_argument("body density must be smaller than the maximum density");
-        } 
-
-        restitution = FlatMath().clamp(restitution, 0.0f, 1.0f);
-        float mass = area * density; 
-        
-        return FlatBody(position, density, mass, restitution, area, isStatic, 0.0f, width, height, ShapeType::box);
-    }
-
-};
-
-#endif // !FLAT_BODY
-
-
+#endif // !BODY_H

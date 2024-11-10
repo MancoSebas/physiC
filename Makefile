@@ -2,11 +2,11 @@
 CXX = g++
 
 CXXFLAGS = -lsfml-graphics -lsfml-window -lsfml-system 
-#
-# source files 
-SRC = src/main.cpp
 
-TARGET = main
+# source files 
+SRC = src/main.cpp src/FlatMath.cpp src/vec2.cpp src/FlatBody.cpp src/collisions.cpp  
+
+TARGET =main
 
 all: $(TARGET)
 

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef WORLD_H
+#define WORLD_H
 
 class FlatWorld{
 public: 
@@ -8,3 +9,6 @@ public:
     float minDensity = 0.5f; // g/cm3
     float maxDensity = 21.4f; // g/cm3
 };
+
+#endif // !WORLD_H
+
