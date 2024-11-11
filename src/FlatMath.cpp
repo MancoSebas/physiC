@@ -1,4 +1,5 @@
 #include "../headers/FlatMath.h"
+#include <SFML/Graphics/Glsl.hpp>
 #include <cmath>
 #include <iostream>
 
@@ -48,3 +49,17 @@ Vec2 FlatMath::normalize(Vec2 v){
 float FlatMath::dot(Vec2 &a, Vec2 &b){
     return ((a.X * b.X) + (a.Y * b.Y));
 }
+
+
+Vec2 FlatMath::shifCoordinates(Vec2 &v, float screen_wdith, float screen_height){
+    return Vec2(v.X + (screen_wdith / 2), -v.Y + (screen_height / 2));
+}
+
+
+/*
+ 
+Vec2 primeCoordinates(Vec2 coordinates){
+    return Vec2(coordinates.X + (float(SCREEN_WIDTH) / 2.0f), - coordinates.Y + (float(SCREEN_HEIGHT) / 2.0f));
+}
+
+*/

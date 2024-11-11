@@ -1,9 +1,5 @@
 #include <SFML/Window/ContextSettings.hpp>
-#include "../headers/collisions.h"
 #include <SFML/Window/WindowStyle.hpp>
-#include <iostream>
-#include "../headers/vec2.h"
-#include "../headers/FlatBody.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Color.hpp>
@@ -13,37 +9,49 @@
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowHandle.hpp>
 #include <random>
+#include <vector>
+#include <iostream>
+
+#include "../headers/collisions.h"
+#include "../headers/vec2.h"
+#include "../headers/FlatBody.h"
+#include "../headers/FlatMath.h"
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 800;
 
-Vec2 primeCoordinates(Vec2 coordinates){
-    return Vec2(coordinates.X + (float(SCREEN_WIDTH) / 2.0f), - coordinates.Y + (float(SCREEN_HEIGHT) / 2.0f));
-}
-
-int main () {
+std::vector<FlatBody> createBodies(int numBodies, float radius){
+    
+    std::vector<FlatBody> bodyList;
 
     std::random_device device;
     std::mt19937 rng(device());
     std::uniform_int_distribution<> dist(-300, 300);
-
-    std::array<FlatBody, 10> bodyList {};
-
-    for(int i = 0; i < bodyList.size(); i++){
-        Vec2 position = primeCoordinates(Vec2(float(dist(rng)),float(dist(rng))));
-        FlatBody body = FlatBody().createCircleBody(20.0f, position, 5.0f, false, 1.0f);
-
-        bodyList[i] = body;
-    }
     
+    for(int i = 0; i < numBodies; i++){
+        
+        Vec2 position = Vec2(float(dist(rng)), float(dist(rng)));
+        Vec2 shiftedPosition = FlatMath().shifCoordinates(position, SCREEN_WIDTH, SCREEN_HEIGHT);
+        
+        FlatBody body = FlatBody().createCircleBody(radius, shiftedPosition, 5.0f, false, 1.0f);
+
+        bodyList.push_back(body);
+    }
+
+    return bodyList;
+}
+
+int main () {
+
+    float speed = 5.0f;
+    std::vector<FlatBody> bodyList = createBodies(100,10.0f);
+
     sf::ContextSettings settings; 
     settings.antialiasingLevel = 8;
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT), "SFML", sf::Style::Default, settings);
-    sf::CircleShape shape(10.0f);
-    shape.setFillColor(sf::Color::White);
+    sf::CircleShape shape;
 
-    float speed = 5.0f;
-    
+
     while(window.isOpen()){
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -58,14 +66,16 @@ int main () {
         }
 
         window.clear();
+        
         for (auto body:bodyList) {
             float radius = body.radius;
             float positionX = body.position.X;
             float positionY = body.position.Y;
-
+            
+            shape.setFillColor(sf::Color::White);
+            
             shape.setRadius(radius);
             shape.setPosition(positionX,positionY);
-
             window.draw(shape);
         }
 
