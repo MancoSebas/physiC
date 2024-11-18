@@ -1,3 +1,5 @@
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <SFML/Window/ContextSettings.hpp>
 #include <SFML/Window/WindowStyle.hpp>
 #include <SFML/Graphics.hpp>
@@ -12,6 +14,7 @@
 #include <vector>
 #include <iostream>
 
+#include "../headers/flatPhysics.h"
 #include "../headers/collisions.h"
 #include "../headers/vec2.h"
 #include "../headers/FlatBody.h"
@@ -21,7 +24,7 @@ const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 800;
 
 std::vector<FlatBody> createBodies(int numBodies, float radius){
-    
+
     std::vector<FlatBody> bodyList;
 
     std::random_device device;
@@ -44,13 +47,21 @@ std::vector<FlatBody> createBodies(int numBodies, float radius){
 int main () {
 
     float speed = 5.0f;
-    std::vector<FlatBody> bodyList = createBodies(100,10.0f);
+    Vec2 initial_velocity = Vec2(0.0,0.01f);
+    Vec2 gravitational_acceleration = Vec2(0.0, 5.5f);
+    std::vector<FlatBody> bodyList = createBodies(1,20.0f);
 
     sf::ContextSettings settings; 
     settings.antialiasingLevel = 8;
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT), "SFML", sf::Style::Default, settings);
     sf::CircleShape shape;
 
+    sf::RectangleShape flooor;
+    flooor.setSize(sf::Vector2f(SCREEN_WIDTH * 2,10.0f));
+    flooor.setPosition(0.0f,SCREEN_WIDTH - 10.0f);
+    
+    sf::Clock clock; 
+    window.setFramerateLimit(60);
 
     while(window.isOpen()){
         sf::Event event;
@@ -66,7 +77,9 @@ int main () {
         }
 
         window.clear();
+        window.draw(flooor);
         
+
         for (auto body:bodyList) {
             float radius = body.radius;
             float positionX = body.position.X;
@@ -78,7 +91,22 @@ int main () {
             shape.setPosition(positionX,positionY);
             window.draw(shape);
         }
-
+        
+        sf::Time time = clock.getElapsedTime();
+        float elapsed_time = time.asSeconds();
+        
+        FlatPhysics().freeFall(bodyList[0], 
+                               initial_velocity, 
+                               gravitational_acceleration, 
+                               elapsed_time, 
+                               float(SCREEN_HEIGHT) - bodyList[0].radius*2 - 10.0f);
+       
+        /*
+        if (bodyList[0].position.Y < (float(SCREEN_HEIGHT) - bodyList[0].radius*2 - 10.0f)){
+            bodyList[0].move(initial_velocity + gravitational_acceleration*elapsed_time);
+        }
+        */
+        
         Collisions collision;
 
         for(int i = 0; i < bodyList.size() - 1; i++){
