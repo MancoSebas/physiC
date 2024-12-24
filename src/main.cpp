@@ -49,7 +49,7 @@ int main () {
     float speed = 5.0f;
     Vec2 initial_velocity = Vec2(0.0,0.01f);
     Vec2 gravitational_acceleration = Vec2(0.0, 5.5f);
-    std::vector<FlatBody> bodyList = createBodies(1,20.0f);
+    std::vector<FlatBody> bodyList = createBodies(100,20.0f);
 
     sf::ContextSettings settings; 
     settings.antialiasingLevel = 8;
@@ -95,17 +95,18 @@ int main () {
         sf::Time time = clock.getElapsedTime();
         float elapsed_time = time.asSeconds();
         
-        FlatPhysics().freeFall(bodyList[0], 
-                               initial_velocity, 
-                               gravitational_acceleration, 
-                               elapsed_time, 
-                               float(SCREEN_HEIGHT) - bodyList[0].radius*2 - 10.0f);
+        
+        for (int i = 0; i < bodyList.size(); i++) {
+            FlatPhysics().freeFall(bodyList[i], 
+                                   initial_velocity, 
+                                   gravitational_acceleration, 
+                                   elapsed_time, 
+                                   float(SCREEN_HEIGHT) - bodyList[i].radius*2 - 10.0f);
+        }
        
-        /*
         if (bodyList[0].position.Y < (float(SCREEN_HEIGHT) - bodyList[0].radius*2 - 10.0f)){
             bodyList[0].move(initial_velocity + gravitational_acceleration*elapsed_time);
         }
-        */
         
         Collisions collision;
 
